@@ -27,4 +27,10 @@ public abstract class AbstractHandler {
                 .build();
     }
 
+    protected SendMessage getSimpleSendMessage(long chatId, String text, boolean markdown) {
+        val sendMessage = getSimpleSendMessage(chatId, text);
+        sendMessage.enableMarkdown(markdown);
+        return sendMessage;
+    }
+
 }

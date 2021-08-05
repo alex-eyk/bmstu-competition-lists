@@ -21,7 +21,7 @@ import java.util.Calendar;
 public abstract class AbstractAnalyseMessageHandler extends MessageHandler {
 
     private static final String DIRECTION_PATTERN = "^\\d{2}.\\d{2}.\\d{2}$";
-    private static final String CREATE_DATE_PATTERN = "hh:mm:ss";
+    private static final String CREATE_DATE_PATTERN = "HH:mm:ss";
 
     private final ReplyMessageProvider replyMessageProvider;
     private final TelegramUserRepository userRepository;
@@ -49,7 +49,7 @@ public abstract class AbstractAnalyseMessageHandler extends MessageHandler {
                 val list = competitionListsService.getListForDirection(direction);
                 val analytics = analyseService.analyse(regNum, list);
                 updateUser(user, direction);
-                return getSimpleSendMessage(id, getReplyText(analytics, list));
+                return getSimpleSendMessage(id, getReplyText(analytics, list), true);
             } catch (IOException e) {
                 val replyText = replyMessageProvider.getMessage("load_list_error");
                 return getSimpleSendMessage(id, replyText);
@@ -65,8 +65,10 @@ public abstract class AbstractAnalyseMessageHandler extends MessageHandler {
 
     private String getReplyText(Analytics analytics, CompetitionList list) {
         val formatReply = replyMessageProvider.getMessage("analyse_format");
+        val calendar = Calendar.getInstance();
+        calendar.setTime(list.getCreated());
         val dayOfWeek = replyMessageProvider.getMessage(
-                "dow_accusative_" + Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+                "dow_accusative_" + calendar.get(Calendar.DAY_OF_WEEK)
         );
         val created = new SimpleDateFormat(CREATE_DATE_PATTERN).format(list.getCreated());
         return String.format(formatReply, analytics.getPosition(), analytics.getNumOfPlaces(),

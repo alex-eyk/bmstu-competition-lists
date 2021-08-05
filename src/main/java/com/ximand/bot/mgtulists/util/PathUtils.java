@@ -1,5 +1,7 @@
 package com.ximand.bot.mgtulists.util;
 
+import com.ximand.properties.JarUtils;
+
 public final class PathUtils {
 
     private PathUtils() {
@@ -14,14 +16,12 @@ public final class PathUtils {
      *     cd 'jar_file_location'
      *     sudo java -jar /TelegramBot.jar
      * </pre>
+     *
      * @return Абсолютный путь к исполняемому Jar-файлу.
      */
+    @Deprecated
     public static String getJarLocation() {
-        return PathUtils.class
-                .getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .getPath();
+        return JarUtils.getJarLocation(PathUtils.class).getPath();
     }
 
 }

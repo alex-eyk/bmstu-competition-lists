@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
-@Log4j2
+@Slf4j
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final ExecutorService executorService;

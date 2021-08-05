@@ -8,7 +8,6 @@ import com.ximand.bot.mgtulists.model.mapper.PdfLineToParticipantMapper;
 import com.ximand.bot.mgtulists.service.pdf.PdfService;
 import com.ximand.bot.mgtulists.util.TextUtils;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -105,12 +104,12 @@ public abstract class AbstractCompetitionListsService implements CompetitionList
 
         @Override
         public void run() {
-            log.info("Checking all lists actuality...");
             directionToParticipantMap.forEach((direction, list) -> {
                 try {
                     val lastDate = pdfService.loadCreateDate(getFileUrl(direction));
                     if (lastDate != null && lastDate.equals(list.getCreated()) == false) {
-                        log.info("Not actual! Last date: " + lastDate + " - created: " + list.getCreated());
+                        log.info("Data for direction: " + direction + " not actual! Last date: " + lastDate
+                                + " - created: " + list.getCreated());
                         updateExecutorService.submit(
                                 updater.getRunnable(direction)
                         );

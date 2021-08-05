@@ -7,29 +7,28 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public abstract class AbstractXmlParser<T> implements XmlParser<T> {
 
     /**
-     * @param xmlPath Полный путь к XML-файлу
      * @throws MalformedXmlException Будет брошено в случае ошибки в XML-файле
      * @throws IllegalStateException Будет брошено в случае ошибки с конфигурацией SAX-парсера или в случае ошибки при
      *                               чтении файла
      */
     @Override
-    public T parseFile(String xmlPath) throws MalformedXmlException {
+    public T parseFile(InputStream xmlInputStream) throws MalformedXmlException {
         val saxParserFactory = SAXParserFactory.newInstance();
         try {
             val saxParser = saxParserFactory.newSAXParser();
             val handler = createSaxEventHandler();
-            saxParser.parse(new File(xmlPath), handler);
+            saxParser.parse(xmlInputStream, handler);
             return handler.getResult();
         } catch (ParserConfigurationException e) {
-            throw new IllegalStateException("Exception with parser configurator while parsing xml-file: " + xmlPath, e);
+            throw new IllegalStateException("Exception with parser configurator while parsing xml", e);
         } catch (IOException e) {
-            throw new IllegalStateException("Exception while read file: " + xmlPath, e);
+            throw new IllegalStateException("Exception while read xml input stream", e);
         } catch (SAXException e) {
             throw new MalformedXmlException(e);
         }

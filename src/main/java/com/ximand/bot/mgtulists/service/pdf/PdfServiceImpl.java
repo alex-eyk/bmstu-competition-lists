@@ -1,7 +1,7 @@
 package com.ximand.bot.mgtulists.service.pdf;
 
-import com.ximand.bot.mgtulists.util.PathUtils;
-import lombok.extern.slf4j.Slf4j;
+import com.ximand.properties.JarUtils;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import lombok.var;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -13,15 +13,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
-@Slf4j
+@Log4j2
 public class PdfServiceImpl implements PdfService {
 
     private static final String CREATE_DATE_PATTERN = "yyyyMMddHHmmss";
@@ -55,7 +53,8 @@ public class PdfServiceImpl implements PdfService {
     private Date getDateFromLine(String line) {
         val partWithDate = line.substring(17, 31);
         try {
-            return new SimpleDateFormat(CREATE_DATE_PATTERN).parse(partWithDate);
+            val createDateUtc4 = new SimpleDateFormat(CREATE_DATE_PATTERN).parse(partWithDate);
+            return new Date(createDateUtc4.getTime() - 60 * 60 * 1000);
         } catch (ParseException e) {
             throw new IllegalStateException("Unable to load create data, pattern: " + CREATE_DATE_PATTERN
                     + "; date: " + partWithDate, e);
@@ -82,15 +81,19 @@ public class PdfServiceImpl implements PdfService {
     private File downloadFile(String url) throws IOException {
         val path = Paths.get(getDownloadedFilePath(url));
         try (val inputStream = new URL(url).openStream()) {
-            log.info("Available bytes: " + inputStream.available());
-            Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+            log.info("Downloading file from url: " + url);
+            try {
+                Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+            } catch (SecurityException | FileAlreadyExistsException | DirectoryNotEmptyException e) {
+                log.error("Unable to download file", e);
+            }
             return path.toFile();
         }
     }
 
     private String getDownloadedFilePath(String url) {
         val filename = url.substring(url.lastIndexOf("/") + 1);
-        return PathUtils.getJarLocation() + filename;
+        return JarUtils.getFileFromJarDirectoryPath(filename, getClass());
     }
 
 }
