@@ -10,8 +10,8 @@ public final class TextUtils {
     }
 
     public static String findAnyByRegex(String text, String... regexArray) {
-        for (String regex : regexArray) {
-            String found = findByRegex(text, regex);
+        for (val regex : regexArray) {
+            val found = findByRegex(text, regex);
             if (found != null) {
                 return found;
             }

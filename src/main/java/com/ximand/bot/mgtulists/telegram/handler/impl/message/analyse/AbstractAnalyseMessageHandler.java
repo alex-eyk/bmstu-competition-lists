@@ -22,15 +22,13 @@ public abstract class AbstractAnalyseMessageHandler extends MessageHandler {
 
     private static final String DIRECTION_PATTERN = "^\\d{2}.\\d{2}.\\d{2}$";
 
-    private final ReplyMessageProvider replyMessageProvider;
     private final TelegramUserRepository userRepository;
     private final CompetitionListsService competitionListsService;
     private final AnalyseService analyseService;
 
     public AbstractAnalyseMessageHandler(UserActivity userActivity, ReplyMessageProvider replyMessageProvider,
                                          TelegramUserRepository userRepository, CompetitionListsService competitionListsService, AnalyseService analyseService) {
-        super(userActivity);
-        this.replyMessageProvider = replyMessageProvider;
+        super(userActivity, replyMessageProvider);
         this.userRepository = userRepository;
         this.competitionListsService = competitionListsService;
         this.analyseService = analyseService;
@@ -50,20 +48,20 @@ public abstract class AbstractAnalyseMessageHandler extends MessageHandler {
                 updateUser(user, direction);
                 return getSimpleSendMessage(id, getReplyText(analytics, list), true);
             } catch (IOException e) {
-                val replyText = replyMessageProvider.getMessage("load_list_error");
+                val replyText = getReplyProvider().getMessage("load_list_error");
                 return getSimpleSendMessage(id, replyText);
             } catch (ParticipantNotFoundException e) {
-                val replyText = replyMessageProvider.getMessage("participant_not_found");
+                val replyText = getReplyProvider().getMessage("participant_not_found");
                 return getSimpleSendMessage(id, replyText);
             }
         } else {
-            val replyText = replyMessageProvider.getMessage("wrong_direction");
+            val replyText = getReplyProvider().getMessage("wrong_direction");
             return getSimpleSendMessage(id, replyText);
         }
     }
 
     private String getReplyText(Analytics analytics, CompetitionList list) {
-        val formatReply = replyMessageProvider.getMessage("analyse_format");
+        val formatReply = getReplyProvider().getMessage("analyse_format");
         val dayOfWeek = getDayOfWeek(list);
         return AnalyticsReply.builder()
                 .format(formatReply)
@@ -80,7 +78,7 @@ public abstract class AbstractAnalyseMessageHandler extends MessageHandler {
     private String getDayOfWeek(CompetitionList competitionList) {
         val calendar = Calendar.getInstance();
         calendar.setTime(competitionList.getUpdated());
-        return replyMessageProvider.getMessage(
+        return getReplyProvider().getMessage(
                 "dow_accusative_" + calendar.get(Calendar.DAY_OF_WEEK)
         );
     }

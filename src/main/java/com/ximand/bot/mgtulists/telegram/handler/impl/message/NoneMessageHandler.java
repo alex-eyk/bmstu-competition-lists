@@ -13,18 +13,15 @@ public class NoneMessageHandler extends MessageHandler {
 
     public static final UserActivity ACTIVITY = UserActivity.NONE;
 
-    private final ReplyMessageProvider replyMessageProvider;
-
     @Autowired
     public NoneMessageHandler(ReplyMessageProvider replyMessageProvider) {
-        super(ACTIVITY);
-        this.replyMessageProvider = replyMessageProvider;
+        super(ACTIVITY, replyMessageProvider);
     }
 
     @Override
     public SendMessage handle(Message message) {
         return getSimpleSendMessage(
-                message.getChatId(), replyMessageProvider.getMessage("none_activity")
+                message.getChatId(), getReplyProvider().getMessage("none_activity")
         );
     }
 }

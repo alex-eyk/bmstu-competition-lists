@@ -13,18 +13,15 @@ public class UnknownCommandHandler extends CommandHandler {
 
     public static final String NAME = "unknown";
 
-    private final ReplyMessageProvider replyMessageProvider;
-
     @Autowired
     public UnknownCommandHandler(ReplyMessageProvider replyMessageProvider) {
-        super(NAME);
-        this.replyMessageProvider = replyMessageProvider;
+        super(NAME, replyMessageProvider);
     }
 
     @Override
     public SendMessage handle(Message message) {
         val chatId = message.getChatId();
-        val reply = replyMessageProvider.getMessage("unknown_command");
+        val reply = getReplyProvider().getMessage("unknown_command");
         return getSimpleSendMessage(chatId, reply);
     }
 }

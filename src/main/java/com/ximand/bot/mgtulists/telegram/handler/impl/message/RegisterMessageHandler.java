@@ -17,12 +17,10 @@ public class RegisterMessageHandler extends MessageHandler {
     private static final String REG_NUMBER_PATTERN = "^(.\\d{4})|(\\d{3}-\\d{3}-\\d{3} \\d{2})$";
 
     private final TelegramUserRepository userRepository;
-    private final ReplyMessageProvider replyMessageProvider;
 
     public RegisterMessageHandler(TelegramUserRepository userRepository, ReplyMessageProvider replyMessageProvider) {
-        super(ACTIVITY);
+        super(ACTIVITY, replyMessageProvider);
         this.userRepository = userRepository;
-        this.replyMessageProvider = replyMessageProvider;
     }
 
     @Override
@@ -35,9 +33,9 @@ public class RegisterMessageHandler extends MessageHandler {
             user.setActivity(UserActivity.NONE);
             user.setRegistrationNumber(reg);
             userRepository.save(user);
-            return getSimpleSendMessage(id, replyMessageProvider.getMessage("registration_number_saved"));
+            return getSimpleSendMessage(id, getReplyProvider().getMessage("registration_number_saved"));
         } else {
-            return getSimpleSendMessage(id, replyMessageProvider.getMessage("wrong_registration_number"));
+            return getSimpleSendMessage(id, getReplyProvider().getMessage("wrong_registration_number"));
         }
     }
 }

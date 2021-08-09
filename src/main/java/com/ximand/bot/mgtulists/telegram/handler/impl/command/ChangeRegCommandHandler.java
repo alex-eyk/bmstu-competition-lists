@@ -15,13 +15,11 @@ public class ChangeRegCommandHandler extends CommandHandler {
 
     private static final String NAME = "change_reg";
 
-    private final ReplyMessageProvider replyMessageProvider;
     private final TelegramUserRepository userRepository;
 
     @Autowired
     public ChangeRegCommandHandler(ReplyMessageProvider replyMessageProvider, TelegramUserRepository userRepository) {
-        super(NAME);
-        this.replyMessageProvider = replyMessageProvider;
+        super(NAME, replyMessageProvider);
         this.userRepository = userRepository;
     }
 
@@ -32,6 +30,6 @@ public class ChangeRegCommandHandler extends CommandHandler {
                 .orElseThrow(IllegalAccessError::new);
         user.setActivity(UserActivity.REGISTER);
         userRepository.save(user);
-        return getSimpleSendMessage(id, replyMessageProvider.getMessage("input_new_registration_number"));
+        return getSimpleSendMessage(id, getReplyProvider().getMessage("input_new_registration_number"));
     }
 }

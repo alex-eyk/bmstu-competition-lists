@@ -16,13 +16,11 @@ public class StartCommandHandler extends CommandHandler {
 
     private static final String NAME = "start";
 
-    private final ReplyMessageProvider replyMessageProvider;
     private final TelegramUserRepository userRepository;
 
     @Autowired
     public StartCommandHandler(TelegramUserRepository userRepository, ReplyMessageProvider replyMessageProvider) {
-        super(NAME);
-        this.replyMessageProvider = replyMessageProvider;
+        super(NAME, replyMessageProvider);
         this.userRepository = userRepository;
     }
 
@@ -40,7 +38,7 @@ public class StartCommandHandler extends CommandHandler {
     }
 
     private SendMessage createReply(long id, String replyKey) {
-        val text = replyMessageProvider.getMessage(replyKey);
+        val text = getReplyProvider().getMessage(replyKey);
         return getSimpleSendMessage(id, text);
     }
 }

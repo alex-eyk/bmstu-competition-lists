@@ -30,7 +30,7 @@ public class XmlReplyMessageProvider implements ReplyMessageProvider {
     public XmlReplyMessageProvider(XmlParser<Map<String, String>> toRepliesParser) {
         try (val xmlInputStream = getClass().getClassLoader().getResourceAsStream(FILE_NAME)) {
             if (xmlInputStream != null) {
-                Map<String, String> replies = toRepliesParser.parseFile(xmlInputStream);
+                val replies = toRepliesParser.parseFile(xmlInputStream);
                 keyToMessageMap = new ConcurrentHashMap<>(replies);
             } else {
                 throw new IllegalStateException("File not found, name: " + FILE_NAME);

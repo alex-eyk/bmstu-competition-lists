@@ -12,14 +12,11 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 public abstract class AbstractAnalyseCommandHandler extends CommandHandler {
 
     private final TelegramUserRepository userRepository;
-    private final ReplyMessageProvider replyMessageProvider;
-
 
     public AbstractAnalyseCommandHandler(String command, TelegramUserRepository userRepository,
                                          ReplyMessageProvider replyMessageProvider) {
-        super(command);
+        super(command, replyMessageProvider);
         this.userRepository = userRepository;
-        this.replyMessageProvider = replyMessageProvider;
     }
 
     protected SendMessage handle(Message message, UserActivity activity) {
@@ -28,7 +25,7 @@ public abstract class AbstractAnalyseCommandHandler extends CommandHandler {
                 .orElseThrow(IllegalStateException::new);
         user.setActivity(activity);
         userRepository.save(user);
-        val replyText = replyMessageProvider.getMessage("input_direction");
+        val replyText = getReplyProvider().getMessage("input_direction");
         return SendMessage.builder()
                 .chatId(String.valueOf(id))
                 .replyMarkup(ReplyUtils.getReplyKeyboardForSet(user.getLastRequests()))
