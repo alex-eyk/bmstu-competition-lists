@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractCompetitionListsService implements CompetitionListsService {
 
     private static final String DIRECTION_PATTERN = "^\\d{2}.\\d{2}.\\d{2}$";
-    private static final String GENERAL_COMPETITION_DECLARATION_PATTERN = "\\d.*((общ.*конкурс.*)|(оплат.*стоимост.*)).*";
+    private static final String GENERAL_COMPETITION_DECLARATION_PATTERN = "\\d.*\\..*((общ.*конкурс.*)|(оплат.*стоимост.*)).*";
 
     private final Map<String, CompetitionList> directionToParticipantMap = new ConcurrentHashMap<>();
     private final Mapper<String, Participant> toParticipantMapper = new PdfLineToParticipantMapper();
