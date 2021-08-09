@@ -107,9 +107,9 @@ public abstract class AbstractCompetitionListsService implements CompetitionList
             directionToParticipantMap.forEach((direction, list) -> {
                 try {
                     val lastDate = pdfService.loadCreateDate(getFileUrl(direction));
-                    if (lastDate != null && lastDate.equals(list.getCreated()) == false) {
+                    if (lastDate != null && lastDate.equals(list.getUpdated()) == false) {
                         log.info("Data for direction: " + direction + " not actual! Last date: " + lastDate
-                                + " - created: " + list.getCreated());
+                                + " - created: " + list.getUpdated());
                         updateExecutorService.submit(
                                 updater.getRunnable(direction)
                         );

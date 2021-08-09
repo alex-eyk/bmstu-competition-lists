@@ -9,19 +9,18 @@ import com.ximand.bot.mgtulists.telegram.handler.MessageHandler;
 import com.ximand.bot.mgtulists.telegram.object.TelegramUser;
 import com.ximand.bot.mgtulists.telegram.object.UserActivity;
 import com.ximand.bot.mgtulists.telegram.reply.ReplyMessageProvider;
+import com.ximand.bot.mgtulists.telegram.reply.object.AnalyticsReply;
 import com.ximand.bot.mgtulists.telegram.repository.TelegramUserRepository;
 import lombok.val;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public abstract class AbstractAnalyseMessageHandler extends MessageHandler {
 
     private static final String DIRECTION_PATTERN = "^\\d{2}.\\d{2}.\\d{2}$";
-    private static final String CREATE_DATE_PATTERN = "HH:mm:ss";
 
     private final ReplyMessageProvider replyMessageProvider;
     private final TelegramUserRepository userRepository;
@@ -65,14 +64,25 @@ public abstract class AbstractAnalyseMessageHandler extends MessageHandler {
 
     private String getReplyText(Analytics analytics, CompetitionList list) {
         val formatReply = replyMessageProvider.getMessage("analyse_format");
+        val dayOfWeek = getDayOfWeek(list);
+        return AnalyticsReply.builder()
+                .format(formatReply)
+                .position(analytics.getPosition())
+                .places(analytics.getPlaces())
+                .gaveConsent(analytics.getGaveConsent())
+                .gaveConsentAnotherDirections(analytics.getGaveConsentAnotherDirections())
+                .updated(list.getUpdated())
+                .updatedDayOfWeek(dayOfWeek)
+                .build()
+                .toString();
+    }
+
+    private String getDayOfWeek(CompetitionList competitionList) {
         val calendar = Calendar.getInstance();
-        calendar.setTime(list.getCreated());
-        val dayOfWeek = replyMessageProvider.getMessage(
+        calendar.setTime(competitionList.getUpdated());
+        return replyMessageProvider.getMessage(
                 "dow_accusative_" + calendar.get(Calendar.DAY_OF_WEEK)
         );
-        val created = new SimpleDateFormat(CREATE_DATE_PATTERN).format(list.getCreated());
-        return String.format(formatReply, analytics.getPosition(), analytics.getNumOfPlaces(),
-                analytics.getGaveConsent(), analytics.getGaveConsentAnotherDirections(), dayOfWeek, created);
     }
 
     private void updateUser(TelegramUser user, String direction) {

@@ -19,7 +19,7 @@ public class AnalyseServiceImpl implements AnalyseService {
             throw new IllegalArgumentException();
         }
         val analytics = new Analytics();
-        analytics.setNumOfPlaces(competitionList.getPlaces());
+        analytics.setPlaces(competitionList.getPlaces());
         for (val participant : competitionList) {
             if (participant.getRegistrationNumber().equals(registerNumber)) {
                 analytics.setPosition(participant.getPosition());

@@ -9,7 +9,7 @@ public class Analytics {
     private int gaveConsentAnotherDirections = 0;
 
     private int position;
-    private int numOfPlaces;
+    private int places;
 
     public void incrementGaveConsent() {
         gaveConsent++;
