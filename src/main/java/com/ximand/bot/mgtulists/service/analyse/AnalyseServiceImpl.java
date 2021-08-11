@@ -1,8 +1,8 @@
 package com.ximand.bot.mgtulists.service.analyse;
 
+import com.ximand.bot.mgtulists.model.Analytics;
 import com.ximand.bot.mgtulists.model.CompetitionList;
 import com.ximand.bot.mgtulists.model.Participant;
-import com.ximand.bot.mgtulists.model.Analytics;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +21,11 @@ public class AnalyseServiceImpl implements AnalyseService {
         val analytics = new Analytics();
         analytics.setPlaces(competitionList.getPlaces());
         for (val participant : competitionList) {
+            updateAnalytics(analytics, participant);
             if (participant.getRegistrationNumber().equals(registerNumber)) {
                 analytics.setPosition(participant.getPosition());
+                analytics.setConsent(participant.isConsentToEnrollment());
                 return analytics;
-            } else {
-                updateAnalytics(analytics, participant);
             }
         }
         throw new ParticipantNotFoundException();

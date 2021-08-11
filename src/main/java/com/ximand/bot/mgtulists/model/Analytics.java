@@ -7,7 +7,7 @@ public class Analytics {
 
     private int gaveConsent = 0;
     private int gaveConsentAnotherDirections = 0;
-
+    private boolean consent = false;
     private int position;
     private int places;
 

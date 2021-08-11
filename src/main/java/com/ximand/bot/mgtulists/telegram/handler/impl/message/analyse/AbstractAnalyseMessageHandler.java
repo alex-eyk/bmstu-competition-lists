@@ -12,6 +12,7 @@ import com.ximand.bot.mgtulists.telegram.reply.ReplyMessageProvider;
 import com.ximand.bot.mgtulists.telegram.reply.object.AnalyticsReply;
 import com.ximand.bot.mgtulists.telegram.repository.TelegramUserRepository;
 import lombok.val;
+import lombok.var;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -63,7 +64,8 @@ public abstract class AbstractAnalyseMessageHandler extends MessageHandler {
     private String getReplyText(Analytics analytics, CompetitionList list) {
         val formatReply = getReplyProvider().getMessage("analyse_format");
         val dayOfWeek = getDayOfWeek(list);
-        return AnalyticsReply.builder()
+        var replyText = analytics.isConsent() ? getReplyProvider().getMessage("consent_gave") : "";
+        return replyText + AnalyticsReply.builder()
                 .format(formatReply)
                 .position(analytics.getPosition())
                 .places(analytics.getPlaces())
