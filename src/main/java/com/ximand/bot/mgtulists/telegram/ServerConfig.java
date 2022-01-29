@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @PropertiesPath("jarpath:/app.properties")
-public final class Config {
+public final class ServerConfig {
 
     @Property(name = "server.threads", defaultValue = "4")
     private int threads;

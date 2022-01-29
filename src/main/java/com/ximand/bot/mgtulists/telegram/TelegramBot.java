@@ -28,7 +28,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private String username;
 
     @Autowired
-    public TelegramBot(Config config, HandlerProvider handlerProvider) {
+    public TelegramBot(ServerConfig config, HandlerProvider handlerProvider) {
         this.executorService = Executors.newFixedThreadPool(config.getThreads());
         this.handlerProvider = handlerProvider;
     }
